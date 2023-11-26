@@ -54,7 +54,7 @@
       <ul>
         <li>Modifique as variáveis <code>wundergroundID</code> e <code>wundergroundPassword</code> com o ID e senha da sua estação Weather Underground.</li>
         <li>Ajuste a variável <code>resetHour</code> para definir o horário desejado para o reset diário.</li>
-        <li>Modifique o seu indicativo (não esqueça do SSID da rede APRS), senha da rede APRS, bem como as coordenadas geográficas da sua estação.</li>
+        <li>Modifique as variáveis <code>aprsCallsignPrefix</code>, <code>aprsCallsignSSID</code>, <code>aprsPassword</code>, <code>aprsVersion</code>, <code>aprsLatitude</code> e <code>aprsLongitude</code> para configurar seu indicativo APRS, senha e coordenadas geográficas.</li>
       </ul>
     </li>
     <li><strong>Upload:</strong>
