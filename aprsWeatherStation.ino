@@ -9,7 +9,6 @@
 #include <WiFiManager.h>
 #include <Adafruit_BMP085.h> 
 
-
 #define DHTPIN D5
 #define DHTTYPE DHT22
 
@@ -30,8 +29,17 @@ String serialData = "";
 // Informações do Weather Underground
 const char *wundergroundServer = "weatherstation.wunderground.com";
 const char *wundergroundPath = "/weatherstation/updateweatherstation.php";
-const char *wundergroundID = "XXXXXXXX99";
-const char *wundergroundPassword = "abc1de23";
+const char *wundergroundID = "YOUR_WUNDERGROUND_ID";
+const char *wundergroundPassword = "YOUR_WUNDERGROUND_PASSWORD";
+
+// Informações da estação APRS
+const char *aprsCallsignPrefix = "YOUR_APRS_CALLSIGN_PREFIX";
+const char *aprsCallsignSSID = "YOUR_APRS_CALLSIGN_SSID";
+const char *aprsPassword = "YOUR_APRS_PASSWORD";
+const char *aprsVersion = "YOUR_APRS_VERSION";
+const char *aprsLatitude = "YOUR_APRS_LATITUDE";
+const char *aprsLongitude = "YOUR_APRS_LONGITUDE";
+const char *aprsComment = "YOUR_APRS_COMMENT";
 
 // Function declarations
 float calculateDewPoint(float temperature, float humidity);
@@ -39,7 +47,7 @@ void sendToWeatherUnderground(float temperature, float humidity, float dewPoint,
 
 // Configuração inicial para atualizações OTA
 void setupOTA() {
-  ArduinoOTA.setHostname("aprsWeatherStation");
+  ArduinoOTA.setHostname("WeatherStation");
   ArduinoOTA.setPassword("admin");
   ArduinoOTA.begin();
 }
@@ -102,7 +110,15 @@ void loop() {
       return;
     }
 
-    client.println("user PY0ABC-13 pass 12345 vers PU3DRO-SWS-0.1");
+    client.print("user ");
+    client.print(aprsCallsignPrefix);
+    client.print("-");
+    client.print(aprsCallsignSSID);
+    client.print(" pass ");
+    client.print(aprsPassword);
+    client.print(" vers ");
+    client.print(aprsVersion);
+    client.println();
     delay(250);
 
     float h22 = dht.readHumidity();
@@ -138,7 +154,15 @@ void loop() {
     USE_SERIAL.println(f);
     USE_SERIAL.println(h);
 
-    client.print("PY0ABC-13>APRSWX,TCPIP*,qAC,WIDE1-1:=0001.99S/00001.99W_");
+    client.print(aprsCallsignPrefix);
+    client.print("-");
+    client.print(aprsCallsignSSID);
+    client.print(">");
+    client.print("APRSWX,TCPIP*,qAC,WIDE1-1:=");
+    client.print(aprsLatitude);
+    client.print("/");
+    client.print(aprsLongitude);
+    client.print("_");
     client.print(".../...g...");
     if (f >= 0) {
       client.print("t0");
@@ -152,7 +176,10 @@ void loop() {
     client.print("b");
     client.print(pressureTenths);                 // Adiciona a medida de pressão em tenths of hPascal
     client.println("");
-    client.println("PY0ABC-13>APRSWX,TCPIP*,qAC,WIDE1-1:> PU3DRO Simple Weather Station");
+    client.println(aprsCallsignPrefix);
+    client.print(">");
+    client.print("APRSWX,TCPIP*,qAC,WIDE1-1:> ");
+    client.print(aprsComment);
     delay(300000);
   }
 }
@@ -190,3 +217,4 @@ void sendToWeatherUnderground(float temperature, float humidity, float dewPoint,
     Serial.println("Failed to connect to Weather Underground");
   }
 }
+
